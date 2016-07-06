@@ -4,8 +4,7 @@ import uuid
 # TODO 
 # Clean these up.
 from odm2api.ODM2.services.createService import *
-from odm2api.ODM2.services.readService import *
-from odm2api.ODMconnection import dbconnection
+from odm2api.ODM2.models import SamplingFeatures, Sites
 
 from src.wizard.view.clsAddNewSampFeatPanel import AddNewSampFeatPanelView
 #from src.wizard.view.clsAddSpatialReferences import NewSpatialReferenceView
@@ -33,11 +32,13 @@ class AddNewSampFeatPanelController(AddNewSampFeatPanelView):
         #cv_names = [i.Name for i in read.getCVSamplingFeatureTypes()]
         self.m_textCtrl30.SetValue('Site')
         
-        self.sites = [i.Name for i in read.getCVSiteTypes()]
+        # self.sites = [i.Name for i in read.getCVSiteTypes()]
+        self.sites = [i.Name for i in read.getCVs(type='Site Type')]
         self.m_comboBox8.AppendItems(self.sites)
         
         self.sp_ref = [{i.SRSName:i.SpatialReferenceID}\
-            for i in read.getCVSpacialReferenceTypes()]
+            # for i in read.getCVSpacialReferenceTypes()]
+            for i in read.getSpatialReferences()]
         self.m_comboBox822.AppendItems(\
             [y for x in [i.keys() for i in self.sp_ref] for y in x]
             )
@@ -45,7 +46,8 @@ class AddNewSampFeatPanelController(AddNewSampFeatPanelView):
         #geo = [i.Name for i in read.getCVSamplingFeatureGeoTypes()]
         self.m_geotypeTxt.SetValue('Point')
         
-        self.datum = [i.Name for i in read.getCVElevationDatums()]
+        # self.datum = [i.Name for i in read.getCVElevationDatums()]
+        self.datum = [i.Name for i in read.getCVs(type="Elevation Datum")]
         self.m_comboBox8211.AppendItems(self.datum)
 
     def onCreateSpatialReference(self, event):
@@ -54,7 +56,8 @@ class AddNewSampFeatPanelController(AddNewSampFeatPanelView):
         if dlg.ShowModal() == wx.ID_OK:
             read = self.db.getReadSession()
             self.sp_ref = [{i.SRSName:i.SpatialReferenceID}\
-                for i in read.getCVSpacialReferenceTypes()]
+                # for i in read.getCVSpacialReferenceTypes()]
+                for i in read.getSpatialReferences()]
             self.m_comboBox822.Clear()
             self.m_comboBox822.AppendItems(\
                 [y for x in [i.keys() for i in self.sp_ref] for y in x]
@@ -76,25 +79,26 @@ class AddNewSampFeatPanelController(AddNewSampFeatPanelView):
             try:
                 # Create the variable in the database.
                 write = self.db.getWriteSession()
-                sf = write.createSamplingFeature(\
-                    uuid=str(self._uuid),
-                    code=self.requiredValues['code'],
-                    vType=self.requiredValues['vType'],
-                    name=self.optionalValues['name'],
-                    description=self.optionalValues['desc'],
-                    geoType=self.optionalValues['geoType'],
-                    elevation=self.optionalValues['elevation'],
-                    elevationDatum=self.optionalValues['elevationDatum'],
-                    featureGeo=self.optionalValues['featureGeo'])
-                
-                site = write.createSite(\
-                    sfId=sf.SamplingFeatureID,
-                    spatialRefId=self.requiredValues['spatialRef'],
-                    vType=self.requiredValues['siteType'],
-                    latitude=self.requiredValues['lat'],
-                    longitude=self.requiredValues['long'])
+                # sf= SamplingFeatures(\
 
-                self.sf = sf
+
+                site = Sites(SamplingFeatureUUID=str(self._uuid),
+                            SamplingFeatureCode=self.requiredValues['code'],
+                            SamplingFeatureTypeCV=self.requiredValues['vType'],
+                            SamplingFeatureName=self.optionalValues['name'],
+                            SamplingFeatureDescription=self.optionalValues['desc'],
+                            SamplingFeatureGeotypeCV=self.optionalValues['geoType'],
+                            Elevation_m=self.optionalValues['elevation'],
+                            ElevationDatumCV=self.optionalValues['elevationDatum'],
+                            FeatureGeometry=self.optionalValues['featureGeo'],
+                            SpatialReferenceID=self.requiredValues['spatialRef'],
+                            SiteTypeCV=self.requiredValues['siteType'],
+                            Latitude=self.requiredValues['lat'],
+                            Longitude=self.requiredValues['long'])
+                # site = write.createSite(site)
+                self.sf = write.createSamplingFeature(site)
+
+
             except Exception as e:
                 print e
         event.Skip()

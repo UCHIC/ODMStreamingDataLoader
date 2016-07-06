@@ -57,7 +57,7 @@ class SampFeatSelectPanel(SeriesSelectPanel):
     def getSeriesData(self):
         if self.parent.database:
             read = self.parent.database.getReadSession()
-            return read.getSamplingFeatures()
+            return read.getSamplingFeatures(type="site")
         return []
 
     def onButtonAdd(self, event):

@@ -114,7 +114,7 @@ class Mapper():
                 self._buildTables()
             #self._buildTables()
         except KeyError as e:
-            logger.error("Unable to create mapping. Check your data & configuration files.")
+            logger.error("Unable to create mapping. Check your data & configuration files. %s" %e)
             return False
         return True
     
@@ -187,7 +187,7 @@ class Mapper():
             if series['CalculateAggInterval'] not in [False, 'False', 'false']:
 
                 df['TimeAggregationInterval'] = 0
-                df['TimeAggregationIntervalUnitsID'] = 0
+                df['TimeAggregationIntervalUnitsID'] = 102
 
             else:
                 df['TimeAggregationInterval'] = series['IntendedTimeSpacing']

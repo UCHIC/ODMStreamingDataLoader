@@ -3,6 +3,7 @@ import wx
 from src.wizard.view.clsAffiliationPanel\
     import AffiliationPanelView
 from src.common.functions import wxdate2pydate
+from odm2api.ODM2.models import Affiliations
 
 class AffiliationPanel(AffiliationPanelView):
     def __init__(self, parent):
@@ -35,16 +36,17 @@ class AffiliationPanel(AffiliationPanelView):
             affLink = str(self.textLink.GetValue())
         affIsContact = self.checkPrimary.GetValue()
         affEnd = None
-        
-        affiliation = write.createAffiliation(personid=int(personID),
-            organizationid=orgID,
-            email=affEmail,
-            phone=affPhone,
-            address=affAddr,
-            link=affLink,
-            iscontact=affIsContact,
-            affiliation_start=affStart,
-            affiliation_end=affEnd) # TODO figure out how to have empty dates.
+
+        aff = Affiliations(PersonID=int(personID),
+            OrganizationID=orgID,
+            PrimaryEmail=affEmail,
+            PrimaryPhone=affPhone,
+            PrimaryAddress=affAddr,
+            PersonLink=affLink,
+            IsPrimaryOrganizationContact=affIsContact,
+            AffiliationStartDate=affStart,
+            AffiliationEndDate=affEnd)
+        affiliation = write.createAffiliation(aff) # TODO figure out how to have empty dates.
         
         print affiliation
         return affiliation

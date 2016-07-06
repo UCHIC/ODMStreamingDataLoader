@@ -7,6 +7,7 @@ from src.wizard.controller.frmRequiredValidator \
     import RequiredValidator
 from src.wizard.controller.frmRequiredComboValidator \
     import RequiredComboValidator
+from odm2api.ODM2.models import Organizations
 
 
 class OrganizationPanel(OrganizationPanelView):
@@ -30,7 +31,8 @@ class OrganizationPanel(OrganizationPanelView):
         else:
             self.m_comboBox131.AppendItems(self.org.keys())
     
-        orgTypes = [org.Name for org in read.getCVOrganizationTypes()]
+        # orgTypes = [org.Name for org in read.getCVOrganizationTypes()]
+        orgTypes = [org.Name for org in read.getCVs(type="Organization Type")]
         self.orgTypeCombo.AppendItems(orgTypes)
 
         self.comboParent.AppendItems(self.org.keys())
@@ -78,13 +80,13 @@ class OrganizationPanel(OrganizationPanelView):
 
 
                 write = self.parent.database.getWriteSession()
-
-                org = write.createOrganization(cvType=orgType,
-                    code=orgCode,
-                    name=orgName,
-                    desc=orgDesc,
-                    link=orgLink,
-                    parentOrgId=orgParent)
+                org= Organizations(OrganizationTypeCV=orgType,
+                    OrganizationCode=orgCode,
+                    OrganizationName=orgName,
+                    OrganizationDescription=orgDesc,
+                    OrganizationLink=orgLink,
+                    ParentOrganizationID=orgParent)
+                org = write.createOrganization(org)
 
                 self.orgID = org.OrganizationID
                 self.orgName = orgName

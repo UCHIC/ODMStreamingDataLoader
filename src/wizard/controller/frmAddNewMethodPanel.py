@@ -2,6 +2,7 @@
 import wx
 
 from src.wizard.view.clsAddNewMethodPanel import AddNewMethodPanelView
+from odm2api.ODM2.models import Methods
 
 class AddNewMethodPanelController(AddNewMethodPanelView):
     def __init__(self, daddy, db, **kwargs):
@@ -34,13 +35,13 @@ class AddNewMethodPanelController(AddNewMethodPanelView):
             self.getFieldValues()
             try:
                 write = self.db.getWriteSession()
-                meth = write.createMethod(\
-                    code=self.methodCode,
-                    name=self.methodName,
-                    vType=self.methodType,
-                    orgId=self.orgId,
-                    description=self.desc)
-                self.method = meth
+                meth = Methods(\
+                    MethodCode=self.methodCode,
+                    MethodName=self.methodName,
+                    MethodTypeCV=self.methodType,
+                    OrganizationID=self.orgId,
+                    MethodDescription=self.desc)
+                self.method = write.createMethod(meth)
             except Exception as e:
                 wx.MessageBox(e, 'Error saving method to database.')
         event.Skip()

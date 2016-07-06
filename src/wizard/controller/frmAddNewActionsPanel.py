@@ -20,6 +20,8 @@ from src.wizard.view.clsCustomDialog \
 from src.wizard.controller.frmAddNewMethodPanel \
     import AddNewMethodPanelController
 
+from odm2api.ODM2.models import Actions, ActionBy
+
 class Test:
     def __init__(self, name, org):
         self.name = name
@@ -46,7 +48,7 @@ class AddNewActionsPanelController(AddNewActionsPanelView):
     def populateFields(self):
         #read = self.db.getReadSession()
 
-        actionTypes = [i.Name for i in self.read.getCVActionTypes()]
+        actionTypes = [i.Name for i in self.read.getCVs(type = "actiontype")]
         self.m_comboBox13.AppendItems(actionTypes)
 
         #self.affList.SetObjects(self.read.getDetailedAffiliationInfo())
@@ -58,8 +60,7 @@ class AddNewActionsPanelController(AddNewActionsPanelView):
         self.btnNewMethod.Enable(True)
         self.m_comboBox134.Clear()
         self.m_comboBox134.SetValue("Select Method")
-        self.methods = [{i.MethodName:i.MethodID}\
-            for i in self.read.getMethodsByType(event.GetString())]
+        self.methods = [{i.MethodName:i.MethodID} for i in self.read.getMethods(type=event.GetString())]
         self.m_comboBox134.SetItems(\
             [y for x in [i.keys() for i in self.methods] for y in x]
             )
@@ -107,26 +108,28 @@ class AddNewActionsPanelController(AddNewActionsPanelView):
             self.getFieldValues() 
             try:
                 write = self.db.getWriteSession()
-                action = write.createAction(\
-                    type=self.actionType,
-                    methodid=self.methodID,
-                    begindatetime=self.beginDT,
-                    begindatetimeoffset=self.beginDTUTC,
-                    enddatetime=self.endDT,
-                    enddatetimeoffset=self.endDTUTC,
-                    description=self.actionDesc,
-                    filelink=self.actionLink)
+                action= Actions(ActionTypeCV=self.actionType,
+                    MethodID=self.methodID,
+                    BeginDateTime=self.beginDT,
+                    BeginDateTimeUTCOffset=self.beginDTUTC,
+                    EndDateTime=self.endDT,
+                    EndDateTimeUTCOffset=self.endDTUTC,
+                    ActionDescription=self.actionDesc,
+                    ActionFileLink=self.actionLink)
+                action = write.createAction(action)
 
                 self.actionID = action.ActionID
                 
                 for affID in self.affiliationList:
-                    write.createActionBy(\
-                        actionid=self.actionID,
-                        affiliationid=affID,
-                        isactionlead=(affID == self.actionLead))
+                    actionby=ActionBy(\
+                        ActionID=self.actionID,
+                        AffiliationID=affID,
+                        IsActionLead=(affID == self.actionLead))
+                    write.createActionby(actionby)
                 
             except Exception as e:
                 print e
+                #todo Catch error and display message
         event.Skip()
 
     def getFieldValues(self):

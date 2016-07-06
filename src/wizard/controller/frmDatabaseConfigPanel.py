@@ -84,6 +84,7 @@ class DatabaseConfigPanel(ChainedDialogPage,
             title = "Connection Successfull"
             connected = True
             self.parent.db = self.dbConnection
+            self.parent.nextButton.SetFocus()
         else:
             connected = False
 

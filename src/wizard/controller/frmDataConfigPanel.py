@@ -252,7 +252,7 @@ class DataConfigPanelController(DataConfigPanelView):
         """
         self.choiceUnitID.Clear()
 
-        timeUnits = read.getUnitsByTypeCV('Time')
+        timeUnits = read.getUnits(type='Time')
         self.timeUnits = {}
         try:
             [self.timeUnits.update({i.UnitsName:i.UnitsID}) for i in timeUnits]
@@ -265,7 +265,8 @@ class DataConfigPanelController(DataConfigPanelView):
         try:
             unitID = searchDict(self.inputDict['Mappings'],
                 'IntendedTimeSpacingUnitID')
-            unit = read.getUnitById(int(unitID))
+            #unit = read.getUnitById(int(unitID))
+            unit = read.getUnits(ids = [int(unitID)])[0]
             i = self.choiceUnitID.FindString(unit.UnitsName)
             self.choiceUnitID.SetSelection(i)
         except KeyError:
@@ -274,7 +275,7 @@ class DataConfigPanelController(DataConfigPanelView):
 
     def onAddNew(self, event):
         self.runSeriesSelectDialog()
-        event.Skip()
+        # event.Skip()
    
     def onCellClick(self, event):
         event.Skip()
@@ -284,7 +285,7 @@ class DataConfigPanelController(DataConfigPanelView):
             # Get the column header.
             self.selectedColumn = \
                 self.m_listCtrl1.GetColLabelValue(event.GetCol())
-        event.Skip
+        # event.Skip
     
     def onColDoubleClick(self, event):
         if event.GetCol() > -1:

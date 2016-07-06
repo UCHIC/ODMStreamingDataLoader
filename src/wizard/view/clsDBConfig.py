@@ -23,7 +23,7 @@ class clsDBConfiguration ( wx.Panel ):
         self.SetMaxSize( wx.Size( 627,291 ) )
         
         formSizer = wx.BoxSizer( wx.VERTICAL )
-        
+
         sbSizer = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Database Connection:" ), wx.VERTICAL )
         
         connectionSizer = wx.FlexGridSizer( 0, 2, 0, 15 )
@@ -74,8 +74,8 @@ class clsDBConfiguration ( wx.Panel ):
         
         self.txtPass = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PASSWORD|wx.SIMPLE_BORDER )
         connectionSizer.Add( self.txtPass, 1, wx.ALL|wx.EXPAND, 5 )
-        
-        
+
+        self.btnTest = wx.Button(self, wx.ID_ANY | wx.RIGHT, u"Test Connection", wx.DefaultPosition, wx.DefaultSize, 0)
         sbSizer.Add( connectionSizer, 90, wx.EXPAND, 3 )
         
         
@@ -84,7 +84,7 @@ class clsDBConfiguration ( wx.Panel ):
         #btnSizer = wx.FlexGridSizer( 0, 2, 0, 0)
         #btnSizer.SetFlexibleDirection( wx.VERTICAL )
         
-        self.btnTest = wx.Button( self, wx.ID_ANY|wx.RIGHT, u"Test Connection", wx.DefaultPosition, wx.DefaultSize, 0 )
+
         connectionSizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
         connectionSizer.Add( self.btnTest, 0, wx.ALL|wx.RIGHT|wx.ALIGN_RIGHT, 0 )
         
@@ -96,6 +96,7 @@ class clsDBConfiguration ( wx.Panel ):
         
         # Connect Events
         self.btnTest.Bind( wx.EVT_BUTTON, self.onTestConnection )
+        self.btnTest.SetFocus()
     
     def __del__( self ):
             pass

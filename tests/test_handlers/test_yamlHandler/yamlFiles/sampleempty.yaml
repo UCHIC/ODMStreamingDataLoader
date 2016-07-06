@@ -1,0 +1,24 @@
+## Configuration file
+## Last modified: 2016-06-16 14:44
+---
+test:
+  Database:
+    Address: localhost
+    DatabaseName: odm2
+    Engine: mysql
+    Password: odm
+    UserName: ODM
+  Mappings: {}
+  Schedule:
+    Beginning: 06/01/2016 12:00:00 AM
+    Frequency: Minute
+    LastUpdate: --
+    Time: 1
+  Settings:
+    DataRowPosition: 2
+    DateTimeColumnName: DateTime
+    Delimiter: ','
+    FileLocation: /Users/stephanie/DEV/StreamingDataLoader/tests/test_handlers/test_csvHandler/csvFiles/SDLTest.csv
+    FillGaps: false
+    HeaderRowPosition: 1
+    UTCOffset: -7

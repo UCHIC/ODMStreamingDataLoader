@@ -3,21 +3,18 @@ import wx
 from datetime import datetime
 import dateutil.parser as dparser
 
-from odm2api.ODMconnection import dbconnection
+
 #TODO get rid of *
-from odm2api.ODM2.services.readService import *
-#from src.wizard.controller.frmNewSeriesDialog import NewSeriesDialog
-#from src.wizard.controller.frmAddNewResultsPanel import AddNewResultsPanelController
-#from src.wizard.controller.frmSeriesSelectPanel import SeriesSelectPanel
+
+
 from src.wizard.controller.frmAddSpatialReference \
     import NewSpatialReferenceController
 from src.wizard.view.clsCustomDialog import CustomDialog
 
 from src.wizard.view.clsResultPage import ResultPageView
-from odm2api.ODM2.services.readService import *
-from odm2api.ODM2.services.createService import *
+from odm2api.ODM2.models import TimeSeriesResults, Results, FeatureActions
+import uuid
 
-from ObjectListView import ObjectListView, ColumnDefn
 
 class ResultSummaryPanel(ResultPageView):
     def __init__( self, parent):
@@ -48,9 +45,9 @@ class ResultSummaryPanel(ResultPageView):
         actionID = selections[4].ActionID
 
         write = self.parent.database.getWriteSession()
-        
-        featureAction = write.createFeatureAction(\
-            samplingFeatureID, actionID)
+        fa =FeatureActions(SamplingFeatureID=samplingFeatureID, ActionID=actionID)
+        featureAction = write.createFeatureAction(fa)
+
         featureActionID = featureAction.FeatureActionID
 
         variableID = selections[1].VariableID
@@ -91,23 +88,8 @@ class ResultSummaryPanel(ResultPageView):
             tax = d[self.comboTax.GetStringSelection()]
         print tax
 
-        result = \
-            write.createResult(featureactionid=featureActionID,
-                           variableid=variableID,
-                           unitid=unitID,
-                           processinglevelid=processingLevelID,
-                           valuecount=valueCount,
-                           sampledmedium=sampledMedium,
-                           resulttypecv=resultTypeCV,
-                           taxonomicclass=tax,
-                           resultdatetime=resultDT,
-                           resultdatetimeutcoffset=validUTCOffset,
-                           validdatetime=validDT,
-                           validdatetimeutcoffset=validUTCOffset,
-                           statuscv=statusCV)
-        
         aggStat = str(self.comboAgg.GetStringSelection())
-        
+
         x = None
         if float(self.txtX.GetValue()) != 0.0:
             x = float(self.txtX.GetValue())
@@ -117,7 +99,7 @@ class ResultSummaryPanel(ResultPageView):
         z = None
         if float(self.txtZ.GetValue()) != 0.0:
             z = float(self.txtZ.GetValue())
-        
+
 
         xUnit = None
         if str(self.comboXUnits.GetStringSelection()) != "":
@@ -137,7 +119,7 @@ class ResultSummaryPanel(ResultPageView):
         sr = None
         if str(self.comboSR.GetStringSelection()) != "":
             sr = d[self.comboSR.GetStringSelection()]
-        
+
         timeSpacing = None
         if str(self.txtIntended.GetValue()) != "":
             timeSpacing = float(self.txtIntended.GetValue())
@@ -148,19 +130,35 @@ class ResultSummaryPanel(ResultPageView):
         print "X", x
         print "Y", y
         print "Z", z
-
-        write.createTimeSeriesResult(result=result,
-            aggregationstatistic=aggStat,
-            xloc=x,
-            xloc_unitid=xUnit,
-            yloc=y,
-            yloc_unitid=yUnit,
-            zloc=z,
-            zloc_unitid=zUnit,
-            srsID=sr,
-            timespacing=timeSpacing,
-            timespacing_unitid=timeUnit)
+        tsr= TimeSeriesResults(ResultUUID = str(uuid.uuid4()),
+                    FeatureActionID=featureActionID,
+                   VariableID=variableID,
+                   UnitsID=unitID,
+                   ProcessingLevelID=processingLevelID,
+                   ValueCount=valueCount,
+                   SampledMediumCV=sampledMedium,
+                   ResultTypeCV=resultTypeCV,
+                   TaxonomicClassifierID=tax,
+                   ResultDateTime=resultDT,
+                   ResultDateTimeUTCOffset=validUTCOffset,
+                   ValidDateTime=validDT,
+                   ValidDateTimeUTCOffset=validUTCOffset,
+                   StatusCV=statusCV,
+                    AggregationStatisticCV=aggStat,
+                    XLocation=x,
+                    XLocationUnitsID=xUnit,
+                    YLocation=y,
+                    YLocationUnitsID=yUnit,
+                    ZLocation=z,
+                    ZLocationUnitsID=zUnit,
+                    SpatialReferenceID=sr,
+                    IntendedTimeSpacing=timeSpacing,
+                    IntendedTimeSpacingUnitsID=timeUnit)
+        result =  write.createResult(tsr)
         
+
+
+
         print result
         return result
 
@@ -202,20 +200,25 @@ class ResultSummaryPanel(ResultPageView):
 
         self.mediums = {} #read.getCVMediumTypes()
         [self.mediums.update({obj.Name:obj}) \
-            for obj in read.getCVMediumTypes()]
+            #for obj in read.getCVMediumTypes()]
+            for obj in read.getCVs(type="Medium")]
 
         self.comboSamp.AppendItems(self.mediums.keys())
 
         self.aggStat = {} #read.getCVAggregationStatistics()
         [self.aggStat.update({obj.Name:obj}) \
-            for obj in read.getCVAggregationStatistics()]
+         #   for obj in read.getCVAggregationStatistics()]
+            for obj in read.getCVs(type="aggregationstatistic")]
         self.comboAgg.AppendItems(self.aggStat.keys())
         
-        status = read.getCVStatus();
+        #status = read.getCVStatus();
+        status = read.getCVs(type="Status")
         statusTerms = [obj.Term for obj in status]
         self.comboStatus.AppendItems(statusTerms)
 
-        timeUnits = read.getUnitsByTypeCV("length")
+        #timeUnits = read.getUnitsByTypeCV("length")
+        timeUnits = read.getUnits(type="length")
+
         timeUnitsName = [obj.UnitsName for obj in timeUnits]
         self.comboXUnits.AppendItems(timeUnitsName)
         self.comboYUnits.AppendItems(timeUnitsName)
@@ -229,7 +232,8 @@ class ResultSummaryPanel(ResultPageView):
             )
         
         self.sp_ref = [{i.SRSName:i.SpatialReferenceID}\
-            for i in read.getCVSpacialReferenceTypes()]
+            #for i in read.getCVSpacialReferenceTypes()]
+            for i in read.getSpatialReferences()]
         self.comboSR.AppendItems(\
             [y for x in [i.keys() for i in self.sp_ref] for y in x]
             )
@@ -240,7 +244,8 @@ class ResultSummaryPanel(ResultPageView):
         if dlg.ShowModal() == wx.ID_OK:
             read = self.parent.database.getReadSession()
             self.sp_ref = [{i.SRSName:i.SpatialReferenceID}\
-                for i in read.getCVSpacialReferenceTypes()]
+                #for i in read.getCVSpacialReferenceTypes()]
+                for i in read.getSpatialReferences()]
             self.comboSR.Clear()
             self.comboSR.AppendItems(\
                 [y for x in [i.keys() for i in self.sp_ref] for y in x]

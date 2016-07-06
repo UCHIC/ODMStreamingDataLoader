@@ -15,6 +15,7 @@ from odm2api.ODM2.services import *
 
 
 
+
 logger = logging.getLogger('SDL_logger')
 
 class Database:
@@ -61,7 +62,10 @@ class Database:
             logger.info('Performing duplicate database value check. (This affects performance).')
             # Check if data is already in the database.
             rc = ReadODM2(self.session_factory)
-            dt = rc.getResultValidDateTime(data['ResultID'][0])
+            #TODO UPDATE API ON THIS CALL
+            #dt = rc.getResultValidDateTime(data['ResultID'][0])
+            r = rc.getResults(ids=[int(data['ResultID'][0])])
+            dt = r[0].ValidDateTime
             finished_data = data[data['ValueDateTime'] > dt[0]]
 
         #print "FINISHED DATA:",finished_data
@@ -76,12 +80,13 @@ class Database:
         '''
 
         rc = ReadODM2(self.session_factory)
-        result = rc.getResultByID(int(resultID))
-        print "result-----",result
-        if result is None:
+        result = rc.getResults([int(resultID)])
+        #result = rc.getResultByID(int(resultID))
+        print "result-----", result
+        if len(result) == 0:
             logger.error("No matching result ID in database.")
             return None
-        return result.VariableObj.NoDataValue
+        return result[0].VariableObj.NoDataValue
 
     def updateDateTime(self, seriesId, dateTime):
         '''

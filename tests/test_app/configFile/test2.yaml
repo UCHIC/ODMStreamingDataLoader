@@ -1,11 +1,11 @@
 ## Configuration file
-## Last modified: 2015-09-15 13:48
+## Last modified: 2016-06-16 14:31
 ---
 Custom_file_id:
   Database:
-    Engine: mysql
     Address: jws.uwrl.usu.edu
     DatabaseName: odm2
+    Engine: mysql
     Password: ODM123!!
     UserName: ODM
   Mappings:
@@ -60,7 +60,7 @@ Custom_file_id:
   Schedule:
     Beginning: 6/4/2014 11:00:00 AM
     Frequency: Minute
-    LastUpdate: 1/1/2015 12:00:00 AM
+    LastUpdate: '2016-06-16 14:31:32'
     Time: 1
   Settings:
     DataRowPosition: 22

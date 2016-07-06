@@ -2,6 +2,7 @@
 import wx
 
 from src.wizard.view.clsAddNewUnitPanel import AddNewUnitPanelView
+from odm2api.ODM2.models import Units
 
 class AddNewUnitPanelController(AddNewUnitPanelView):
     def __init__(self, daddy, db, **kwargs):
@@ -15,7 +16,8 @@ class AddNewUnitPanelController(AddNewUnitPanelView):
     def populateFields(self):
        read = self.db.getReadSession()
 
-       units = [i.Name for i in read.getCVUnitsTypes()]
+       # units = [i.Name for i in read.getCVUnitsTypes()]
+       units = [i.Name for i in read.getCVs(type="Units Type")]
        self.m_comboBox13.AppendItems(units)
 
     def onOK(self, event):
@@ -27,11 +29,11 @@ class AddNewUnitPanelController(AddNewUnitPanelView):
             self.getFieldValues()
             try:
                 write = self.db.getWriteSession()
-                
-                write.createUnit(type=self.unitsType,
-                    abbrev=self.unitsAbr,
-                    name=self.unitsName,
-                    link=self.unitsLink)
+                unit = Units(UnitsTypeCV=self.unitsType,
+                    UnitsAbbreviation=self.unitsAbr,
+                    UnitsName=self.unitsName,
+                    UnitsLink=self.unitsLink)
+                write.createUnit(unit)
 
             except Exception as e:
                 print e

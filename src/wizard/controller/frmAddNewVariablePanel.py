@@ -2,6 +2,7 @@
 import wx
 
 from src.wizard.view.clsAddNewVariablePanel import AddNewVariablePanelView
+from odm2api.ODM2.models import Variables
 
 class AddNewVariablePanelController(AddNewVariablePanelView):
     def __init__(self, daddy, db, **kwargs):
@@ -17,13 +18,17 @@ class AddNewVariablePanelController(AddNewVariablePanelView):
         '''
         read = self.db.getReadSession()
 
-        names = [i.Name for i in read.getCVVariableNames()]
+        # names = [i.Name for i in read.getCVVariableNames()]
+        names = [i.Name for i in read.getCVs(type="Variable Name")]
         self.m_comboBox4.AppendItems(names)
+
         
-        types = [i.Name for i in read.getCVVariableTypes()]
+        # types = [i.Name for i in read.getCVVariableTypes()]
+        types = [i.Name for i in read.getCVs(type="Variable Type")]
         self.m_comboBox12.AppendItems(types)
         
-        speciations = [i.Name for i in read.getCVSpeciations()]
+        # speciations = [i.Name for i in read.getCVSpeciations()]
+        speciations = [i.Name for i in read.getCVs(type="Speciation")]
         self.m_comboBox2.AppendItems(speciations)
 
     def onOK(self, event):
@@ -33,14 +38,14 @@ class AddNewVariablePanelController(AddNewVariablePanelView):
         self.getFieldValues()
         try:
             write = self.db.getWriteSession()
-
-            write.createVariable(\
-                code=self.variableCode,
-                name=self.variableName,
-                vType=self.variableType,
-                nodv=self.ndv,
-                speciation=self.speciation,
-                definition=self.definition)
+            var = Variables(\
+                VariableCode=self.variableCode,
+                VariableNameCV=self.variableName,
+                VariableTypeCV=self.variableType,
+                NoDataValue=self.ndv,
+                SpeciationCV=self.speciation,
+                VariableDefinition=self.definition)
+            write.createVariable(var)
 
         except Exception as e:
             print e

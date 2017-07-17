@@ -96,12 +96,6 @@ class DataConfigPanelController(DataConfigPanelView):
         for mapping in self.deletedMappings:
             self.inputDict['Mappings'].pop(mapping)
         
-        for k,v in self.inputDict['Mappings'].iteritems():
-            #print v
-            v['IntendedTimeSpacing'] = self.spinTimeSpacing.GetValue()
-            i = self.choiceUnitID.GetSelection()
-            unitID = self.timeUnits[str(self.choiceUnitID.GetString(i))]
-            v['IntendedTimeSpacingUnitID'] = unitID
         
         self.inputDict['Settings']['UTCOffset'] = \
             self.spinUTCOffset.GetValue()
@@ -225,13 +219,8 @@ class DataConfigPanelController(DataConfigPanelView):
         setInputUTCOffset: Attempts to set the value of 
         intended time spacing spin ctrl to a pre-existing number.
         """
+        #this function is old and can likely be removed
         pass
-        # try:
-        #     self.spinTimeSpacing.SetValue(\
-        #         searchDict(self.inputDict['Mappings'],
-        #             'IntendedTimeSpacing'))
-        # except KeyError:
-        #     self.spinTimeSpacing.SetValue(0)
 
     def setInputUTCOffset(self):
         """
@@ -258,18 +247,6 @@ class DataConfigPanelController(DataConfigPanelView):
         except Exception as e:
             print e
             wx.MessageBox("Error reading time units from database.", "Time Units Error")
-
-        # for unit in timeUnits:
-        #     self.choiceUnitID.Append(unit.UnitsName)
-        # try:
-        #     unitID = searchDict(self.inputDict['Mappings'],
-        #         'IntendedTimeSpacingUnitID')
-        #     #unit = read.getUnitById(int(unitID))
-        #     unit = read.getUnits(ids = [int(unitID)])[0]
-        #     i = self.choiceUnitID.FindString(unit.UnitsName)
-        #     self.choiceUnitID.SetSelection(i)
-        # except KeyError:
-        #     self.choiceUnitID.SetSelection(0)
 
 
     def onAddNew(self, event):

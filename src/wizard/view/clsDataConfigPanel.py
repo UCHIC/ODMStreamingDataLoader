@@ -59,30 +59,6 @@ class DataConfigPanelView(wx.Panel):
         
         
         bSizerTopLeft.Add( sbSizerTime, 0, wx.EXPAND, 10 )
-        
-        
-        
-        #sbSizerSpacing = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Intended Time Spacing:" ), wx.VERTICAL )
-        
-        # self.spinTimeSpacing = wx.SpinCtrl( sbSizerSpacing.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 10, 0 )
-        # self.spinTimeSpacing.SetMinSize( wx.Size( 160,-1 ) )
-        # self.spinTimeSpacing.SetRange(0,100)
-        # sbSizerSpacing.Add( self.spinTimeSpacing, 0, wx.ALL, 10 )
-        #
-        # bSizerUnit = wx.BoxSizer(wx.HORIZONTAL)
-        #
-        # lblUnitID = wx.StaticText(sbSizerSpacing.GetStaticBox(), wx.ID_ANY,u"Unit", wx.DefaultPosition, wx.DefaultSize, 0)
-        #
-        # bSizerUnit.Add(lblUnitID, 0, wx.ALL, 10)
-        # bSizerUnit.AddSpacer((0, 0), 1, wx.EXPAND)
-        #
-        # self.choiceUnitID = wx.Choice( sbSizerSpacing.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 120,-1 ), choiceTimeColChoices, 0)
-        # self.choiceUnitID.SetSelection(0)
-        # bSizerUnit.Add(self.choiceUnitID, 0, wx.ALL, 10)
-        #
-        # sbSizerSpacing.Add(bSizerUnit, 0, wx.EXPAND)
-        #
-        # bSizerTopLeft.Add(sbSizerSpacing, 0, wx.EXPAND, 10)
 
         bSizerTop.Add(bSizerTopLeft, 0, wx.EXPAND)
 

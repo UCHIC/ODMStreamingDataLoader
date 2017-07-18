@@ -20,7 +20,7 @@ class DataConfigPanelController(DataConfigPanelView):
         
         self.prev_data = {}
         self.inputDict = {}
-        self.m_listCtrl3.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.rightClick)
+        self.lstMappings.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.rightClick)
 
 
     def rightClick(self, event):
@@ -44,13 +44,13 @@ class DataConfigPanelController(DataConfigPanelView):
 
     def editMapping(self, event):
         self.selectedColumn = \
-            self.m_listCtrl3.GetSelectedObject().variableName
+            self.lstMappings.GetSelectedObject().variableName
         self.runSeriesSelectDialog()
         event.Skip()
     
     def deleteMapping(self, event):
         names = [obj.variableName for obj in \
-            self.m_listCtrl3.GetSelectedObjects()]
+                 self.lstMappings.GetSelectedObjects()]
         for i in range(0, self.m_listCtrl1.GetNumberCols()):
             if str(self.m_listCtrl1.GetColLabelValue(i)) in names:
                 self.m_listCtrl1.SetColLabelRenderer(\
@@ -61,14 +61,14 @@ class DataConfigPanelController(DataConfigPanelView):
         # Instead of deleting from mapping right now,
         # add to a list that can be deleted when finish
         # button is clicked.
-        for name in self.m_listCtrl3.GetSelectedObjects():
+        for name in self.lstMappings.GetSelectedObjects():
             self.deletedMappings.append(name.variableName)
         #for name in self.m_listCtrl3.GetSelectedObjects():
         #    self.inputDict['Mappings'].pop(name.variableName)
 
-        self.m_listCtrl3.RemoveObjects(\
-            self.m_listCtrl3.GetSelectedObjects())
-        self.m_listCtrl3.RepopulateList()
+        self.lstMappings.RemoveObjects(\
+            self.lstMappings.GetSelectedObjects())
+        self.lstMappings.RepopulateList()
         
         event.Skip()
     
@@ -96,12 +96,6 @@ class DataConfigPanelController(DataConfigPanelView):
         for mapping in self.deletedMappings:
             self.inputDict['Mappings'].pop(mapping)
         
-        for k,v in self.inputDict['Mappings'].iteritems():
-            #print v
-            v['IntendedTimeSpacing'] = self.spinTimeSpacing.GetValue()
-            i = self.choiceUnitID.GetSelection()
-            unitID = self.timeUnits[str(self.choiceUnitID.GetString(i))]
-            v['IntendedTimeSpacingUnitID'] = unitID
         
         self.inputDict['Settings']['UTCOffset'] = \
             self.spinUTCOffset.GetValue()
@@ -158,8 +152,8 @@ class DataConfigPanelController(DataConfigPanelView):
         except KeyError:
             existingData.update({"Mappings": {}})
         
-        self.m_listCtrl3.DeleteAllItems()
-        self.m_listCtrl3.RepopulateList()
+        self.lstMappings.DeleteAllItems()
+        self.lstMappings.RepopulateList()
         
         popThese = []
         # Iterate through the mappings 
@@ -171,19 +165,21 @@ class DataConfigPanelController(DataConfigPanelView):
                 continue
             # Add the variable name to the mapping list.
             mapping = read.getDetailedResultInfo("Time series coverage", values['ResultID'])
-            mapped = mapping[0]
-            self.m_listCtrl3.AddObject(
-                ResultMapping(mapped.ResultID,
-                    mapped.SamplingFeatureCode,
-                    mapped.SamplingFeatureName,
-                    mapped.MethodCode,
-                    mapped.MethodName,
-                    mapped.VariableCode,
-                    mapped.VariableNameCV,
-                    mapped.ProcessingLevelCode,
-                    mapped.ProcessingLevelDefinition,
-                    mapped.UnitsName,
-                    variableName))
+
+            # mapped = mapping[0]
+            for mapped in mapping:
+                self.lstMappings.AddObject(
+                    ResultMapping(mapped.ResultID,
+                        mapped.SamplingFeatureCode,
+                        mapped.SamplingFeatureName,
+                        mapped.MethodCode,
+                        mapped.MethodName,
+                        mapped.VariableCode,
+                        mapped.VariableNameCV,
+                        mapped.ProcessingLevelCode,
+                        mapped.ProcessingLevelDefinition,
+                        mapped.UnitsName,
+                        variableName))
         if popThese:
             wx.MessageBox("Mappings for the following variables exist, but do not appear in the selected data file:\n'%s'\n\nThese mappings will be deleted if you continue." \
                 % (", ".join(popThese)),
@@ -223,13 +219,8 @@ class DataConfigPanelController(DataConfigPanelView):
         setInputUTCOffset: Attempts to set the value of 
         intended time spacing spin ctrl to a pre-existing number.
         """
-
-        try:
-            self.spinTimeSpacing.SetValue(\
-                searchDict(self.inputDict['Mappings'],
-                    'IntendedTimeSpacing'))
-        except KeyError:
-            self.spinTimeSpacing.SetValue(0)
+        #this function is old and can likely be removed
+        pass
 
     def setInputUTCOffset(self):
         """
@@ -247,7 +238,7 @@ class DataConfigPanelController(DataConfigPanelView):
         setInputUTCOffset: Attempts to set the units
         combo box to a pre-existing value.
         """
-        self.choiceUnitID.Clear()
+        #self.choiceUnitID.Clear()
 
         timeUnits = read.getUnits(type='Time')
         self.timeUnits = {}
@@ -256,18 +247,6 @@ class DataConfigPanelController(DataConfigPanelView):
         except Exception as e:
             print e
             wx.MessageBox("Error reading time units from database.", "Time Units Error")
-
-        for unit in timeUnits:
-            self.choiceUnitID.Append(unit.UnitsName)
-        try:
-            unitID = searchDict(self.inputDict['Mappings'],
-                'IntendedTimeSpacingUnitID')
-            #unit = read.getUnitById(int(unitID))
-            unit = read.getUnits(ids = [int(unitID)])[0]
-            i = self.choiceUnitID.FindString(unit.UnitsName)
-            self.choiceUnitID.SetSelection(i)
-        except KeyError:
-            self.choiceUnitID.SetSelection(0)
 
 
     def onAddNew(self, event):
@@ -328,12 +307,12 @@ class DataConfigPanelController(DataConfigPanelView):
                 'CalculateAggInterval':'false'}})
             
             #pprint.pprint(self.inputDict)
-            for m in self.m_listCtrl3.GetObjects():
+            for m in self.lstMappings.GetObjects():
                 if m.variableName == dlg.selectedResult.variableName:
-                    self.m_listCtrl3.RemoveObjects([m])
+                    self.lstMappings.RemoveObjects([m])
                     break
 
-            self.m_listCtrl3.AddObject(dlg.selectedResult)
+            self.lstMappings.AddObject(dlg.selectedResult)
             dlg.Destroy()
             return True
         dlg.Destroy()

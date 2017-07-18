@@ -83,7 +83,7 @@ class SeriesSelectDialog(CustomDialog):
                                             wiz.result.ResultID)
             r_id = r[0].ResultID ###DetailedResult instance has no attribute resultID
 
-            r_id = r[0].resultID
+            r_id = r[0].ResultID
     
             detailedResults = read.getDetailedResultInfo("Time series coverage")
             self.seriesSelectPanel.listCtrl.SetObjects(detailedResults)

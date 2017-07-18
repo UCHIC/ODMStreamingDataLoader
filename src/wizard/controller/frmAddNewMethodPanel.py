@@ -10,7 +10,10 @@ class AddNewMethodPanelController(AddNewMethodPanelView):
             **kwargs)
         self.parent = daddy
         self.db = db
-
+        self.method = None# This is our method return value
+        self.methodCode = None
+        self.methodName = None
+        self.desc = None
         self.populateFields()
     
     def setTypeFilter(self, t):

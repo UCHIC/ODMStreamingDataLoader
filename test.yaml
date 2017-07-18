@@ -1,0 +1,30 @@
+## Configuration file
+## Last modified: 2017-07-11 13:39
+---
+test:
+  Database:
+    Address: localhost
+    DatabaseName: odm2
+    Engine: mysql
+    Password: bobrules
+    UserName: Bob
+  Mappings:
+    RelativeHumidity-%:
+      CalculateAggInterval: 'false'
+      IntendedTimeSpacing: 0
+      IntendedTimeSpacingUnitID: 136
+      LastByteRead: '127003'
+      ResultID: 22293
+  Schedule:
+    Beginning: 01/01/2014 12:00:00 AM
+    Frequency: Hour
+    LastUpdate: '2017-07-11 13:39:41'
+    Time: 1
+  Settings:
+    DataRowPosition: 21
+    DateTimeColumnName: DateTime
+    Delimiter: ','
+    FileLocation: C:\Sites\ODM2StreamingDataLoader\ODM2StreamingDataLoader\tests\test_handlers\test_csvHandler\csvFiles\Treeline_HrlySummary_2014.csv
+    FillGaps: 'false'
+    HeaderRowPosition: 20
+    UTCOffset: 0

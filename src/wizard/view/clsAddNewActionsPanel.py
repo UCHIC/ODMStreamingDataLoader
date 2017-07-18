@@ -113,10 +113,10 @@ class AddNewActionsPanelView ( wx.Panel ):
         
         bSizer271.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
         
-        self.m_datePicker5 = wx.DatePickerCtrl( sbSizer22.GetStaticBox(), wx.ID_ANY, wx.DefaultDateTime, wx.DefaultPosition, wx.DefaultSize, wx.DP_DEFAULT )
-        self.m_datePicker5.SetMinSize( wx.Size( 149,-1 ) )
+        self.dateBegin = wx.DatePickerCtrl(sbSizer22.GetStaticBox(), wx.ID_ANY, wx.DefaultDateTime, wx.DefaultPosition, wx.DefaultSize, wx.DP_DEFAULT)
+        self.dateBegin.SetMinSize(wx.Size(149, -1))
         
-        bSizer271.Add( self.m_datePicker5, 0, wx.ALL, 5 )
+        bSizer271.Add(self.dateBegin, 0, wx.ALL, 5)
         
         self.m_timePicker1 = masked.TimeCtrl(\
             sbSizer22.GetStaticBox(), wx.ID_ANY,

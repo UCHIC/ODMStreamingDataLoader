@@ -96,8 +96,9 @@ class DatabaseConfigPanel(ChainedDialogPage,
                 self.parent.nextButton.SetFocus()
             else:
                 connected = False
-        except:
-                connected = False
+        except Exception as ex:
+            connected = False
+            print ex
 
         wx.MessageBox(message=message,
             caption=title,

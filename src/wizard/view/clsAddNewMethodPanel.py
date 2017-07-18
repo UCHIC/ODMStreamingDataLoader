@@ -142,6 +142,11 @@ class AddNewMethodPanelView(wx.Panel):
         self.Layout()
 
         self.__size_of_combo = self.m_comboBox141.GetSize()
+        self.m_sdbSizer5OK.Bind(wx.EVT_BUTTON, self.onOK)
+
+
+    def onOK(self, event):
+        pass
 
     def on_show_combo(self, event):
         combo = event.GetEventObject()

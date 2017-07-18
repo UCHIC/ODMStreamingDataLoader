@@ -59,31 +59,7 @@ class DataConfigPanelView(wx.Panel):
         
         
         bSizerTopLeft.Add( sbSizerTime, 0, wx.EXPAND, 10 )
-        
-        
-        
-        sbSizerSpacing = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Intended Time Spacing:" ), wx.VERTICAL )
-        
-        self.spinTimeSpacing = wx.SpinCtrl( sbSizerSpacing.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 10, 0 )
-        self.spinTimeSpacing.SetMinSize( wx.Size( 160,-1 ) )
-        self.spinTimeSpacing.SetRange(0,100) 
-        sbSizerSpacing.Add( self.spinTimeSpacing, 0, wx.ALL, 10 )
-        
-        bSizerUnit = wx.BoxSizer(wx.HORIZONTAL)
-        
-        lblUnitID = wx.StaticText(sbSizerSpacing.GetStaticBox(), wx.ID_ANY,u"Unit", wx.DefaultPosition, wx.DefaultSize, 0)
 
-        bSizerUnit.Add(lblUnitID, 0, wx.ALL, 10)
-        bSizerUnit.AddSpacer((0, 0), 1, wx.EXPAND)
-
-        self.choiceUnitID = wx.Choice( sbSizerSpacing.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.Size( 120,-1 ), choiceTimeColChoices, 0)
-        self.choiceUnitID.SetSelection(0)
-        bSizerUnit.Add(self.choiceUnitID, 0, wx.ALL, 10)
-
-        sbSizerSpacing.Add(bSizerUnit, 0, wx.EXPAND)
-
-        bSizerTopLeft.Add( sbSizerSpacing, 0, wx.EXPAND, 10)
-        
         bSizerTop.Add(bSizerTopLeft, 0, wx.EXPAND)
 
         
@@ -111,7 +87,7 @@ class DataConfigPanelView(wx.Panel):
         sbSizerMappings = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Mappings:" ), wx.VERTICAL )
         
         # ObjectListView table.
-        self.m_listCtrl3 = \
+        self.lstMappings = \
                 ObjectListView(sbSizerMappings.GetStaticBox(),
                            id=wx.ID_ANY,
                            pos=wx.DefaultPosition,
@@ -119,12 +95,12 @@ class DataConfigPanelView(wx.Panel):
                            style=wx.LC_REPORT|wx.SUNKEN_BORDER)
         # Customize the list control's message
         # when it is empty.
-        self.m_listCtrl3.oddRowsBackColor = wx.Colour(255, 248, 229)
-        self.m_listCtrl3.evenRowsBackColor = wx.Colour(204, 229, 255)
-        self.m_listCtrl3.SetEmptyListMsg(\
+        self.lstMappings.oddRowsBackColor = wx.Colour(255, 248, 229)
+        self.lstMappings.evenRowsBackColor = wx.Colour(204, 229, 255)
+        self.lstMappings.SetEmptyListMsg(\
             "No columns mapped")
-        self.m_listCtrl3.SetObjects(None)
-        self.m_listCtrl3.SetColumns([
+        self.lstMappings.SetObjects(None)
+        self.lstMappings.SetColumns([
             ColumnDefn('Data Column','left',150,'variableName'),
             ColumnDefn('Result ID','left',70,'resultID'),
             ColumnDefn('Samp. Feat. Code','left',110,'samplingFeatureCode'),
@@ -136,7 +112,7 @@ class DataConfigPanelView(wx.Panel):
             ColumnDefn('Method Name','left',100,'methodName'),
             ColumnDefn('Proc. Level Code','left',110,'processingLevelCode'),])  
         
-        sbSizerMappings.Add(self.m_listCtrl3, 1, wx.EXPAND|wx.ALL)
+        sbSizerMappings.Add(self.lstMappings, 1, wx.EXPAND | wx.ALL)
         
         bSizerBottom.Add( sbSizerMappings, 0, wx.EXPAND|wx.ALL)
         

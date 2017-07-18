@@ -34,7 +34,7 @@ class Database:
         print Credentials.host
         print Credentials.db_name
         print Credentials.uid
-        print Credentials.pwd
+        # print Credentials.pwd
 
         self.session_factory = \
             dbconnection.createConnection(Credentials.engine, Credentials.host,
@@ -42,7 +42,10 @@ class Database:
                                             Credentials.uid,
                                             Credentials.pwd, 2.0)
         if not self.session_factory:
-            logger.error("Unable to connect to database with host='%s', database='%s', user='%s', pwd='%s'." % (Credentials.host, Credentials.db_name, Credentials.uid, Credentials.pwd))
+            message = "Unable to connect to database with host='%s', database='%s', user='%s', pwd='%s'." % (Credentials.host, Credentials.db_name, Credentials.uid, Credentials.pwd)
+
+            logger.error(message)
+            print message
             return False
         
         return True

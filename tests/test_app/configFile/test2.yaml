@@ -1,12 +1,12 @@
 ## Configuration file
-## Last modified: 2017-06-15 15:45
+## Last modified: 2017-06-28 13:22
 ---
 Custom_file_id:
   Database:
-    Address: jws.uwrl.usu.edu
+    Address: (local)
     DatabaseName: odm2
-    Engine: mysql
-    Password: ODM123!!
+    Engine: mssql
+    Password: odm
     UserName: ODM
   Mappings:
     AirTemperature-C:
